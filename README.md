@@ -1,4 +1,19 @@
-# React + Vite
+# test_reactu – Akcie (React + Node API)
+
+React aplikace s tabulkou akcií, výběrem data a načítáním kurzů z Yahoo Finance. Backend: Node.js (Express) + SQLite.
+
+## Spuštění
+
+1. **Backend:** `cd server && npm install && npm run init-db && npm run start` (běží na http://localhost:3000)
+2. **Frontend:** v kořeni projektu `npm install && npm run dev` (běží na http://localhost:5173)
+
+## Stack
+
+- React (Vite), Express, SQLite (better-sqlite3), Yahoo Finance Chart API
+
+---
+
+# React + Vite (šablona)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
