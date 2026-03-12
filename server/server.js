@@ -14,6 +14,21 @@ app.use(cors())
 app.use(express.json())
 
 const db = new Database(dbPath)
+// Tabulka vždy existuje (pro čerstvý klon bez init-db)
+db.exec(`
+  CREATE TABLE IF NOT EXISTS akcie (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    akcie TEXT NOT NULL,
+    hodnota_czk REAL NOT NULL,
+    zmena_ve_dni TEXT NOT NULL,
+    datum DATE NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_akcie_datum ON akcie(datum);
+`)
+
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true })
+})
 
 app.get('/api/akcie/symboly', (req, res) => {
   res.json(SEZNAM_AKCIÍ)

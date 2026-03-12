@@ -3,6 +3,12 @@ import './App.css'
 
 const API_URL = '/api'
 
+function isNetworkError(message) {
+  if (!message || typeof message !== 'string') return false
+  const s = message.toLowerCase()
+  return s.includes('failed to fetch') || s.includes('networkerror') || s.includes('load failed') || s.includes('connection') || s.includes('refused') || s.includes('net::')
+}
+
 function App() {
   const [datum, setDatum] = useState(() => {
     const d = new Date()
@@ -112,9 +118,12 @@ function App() {
           {error && (
             <p className="error">
               Chyba: {error}
-              {error.includes('Failed to fetch') || error.includes('NetworkError') ? (
-                <span> Spusť API server (npm run server ve složce server).</span>
-              ) : null}
+              {isNetworkError(error) && (
+                <span className="error-hint">
+                  {' '}
+                  Spusť nejdřív API: v terminálu <code>npm run server</code>, pak v druhém <code>npm run dev</code> a otevři http://localhost:5173
+                </span>
+              )}
             </p>
           )}
           {loading && <p className="loading">Načítám…</p>}

@@ -4,8 +4,19 @@ React aplikace s tabulkou akcií, výběrem data a načítáním kurzů z Yahoo 
 
 ## Spuštění
 
-1. **Backend:** `cd server && npm install && npm run init-db && npm run start` (běží na http://localhost:3000)
-2. **Frontend:** v kořeni projektu `npm install && npm run dev` (běží na http://localhost:5173)
+**Důležité:** Aplikace potřebuje běžet **obě** části. Pořadí:
+
+1. **Terminál 1 – API server:**  
+   `npm run server`  
+   (nebo `cd server && npm install && npm run start`)  
+   Musí běžet na http://localhost:3000.
+
+2. **Terminál 2 – React:**  
+   `npm install && npm run dev`  
+   Pak otevři v prohlížeči **http://localhost:5173** (ne soubor index.html).
+
+Pokud vidíš „Chyba: Failed to fetch“, API neběží – spusť nejdřív `npm run server`.
+Volitelně naplň DB seed daty: `npm run server:init-db` (jednou).
 
 ## Stack
 

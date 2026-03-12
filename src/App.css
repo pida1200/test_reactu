@@ -109,6 +109,20 @@
   font-size: 0.9rem;
 }
 
+.error .error-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: #fbbf24;
+  font-size: 0.85rem;
+}
+
+.error code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
 .loading {
   flex-shrink: 0;
   color: #94a3b8;
