@@ -1,0 +1,216 @@
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  background: #1a1a2e;
+  color: #eee;
+  border-bottom: 1px solid #333;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  overflow: hidden;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-height: 100%;
+  width: 100%;
+  max-width: 720px;
+}
+
+.table-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.date-picker-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-picker-wrap label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.date-input {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #2d2d44;
+  color: #eee;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.yahoo-fetch-wrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.yahoo-fetch-wrap label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+}
+
+.akcie-select {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #2d2d44;
+  color: #eee;
+  min-width: 180px;
+}
+
+.error {
+  flex-shrink: 0;
+  color: #f87171;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.loading {
+  flex-shrink: 0;
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.no-data {
+  text-align: center;
+  color: #64748b;
+  padding: 1.5rem !important;
+  font-size: 0.9rem;
+}
+
+.td-button {
+  white-space: nowrap;
+}
+
+.btn-yahoo {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #334155;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.btn-yahoo:hover:not(:disabled) {
+  background: #475569;
+  border-color: #646cff;
+}
+
+.btn-yahoo:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hint {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.akcie-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 320px;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+.akcie-table th,
+.akcie-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.akcie-table thead {
+  background: #1a1a2e;
+  color: #eee;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-shadow: 0 1px 0 #e5e7eb;
+}
+
+.akcie-table thead th {
+  font-weight: 600;
+  border-bottom: none;
+}
+
+.akcie-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.akcie-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.zmena-plus {
+  color: #059669;
+  font-weight: 500;
+}
+
+.zmena-minus {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.footer {
+  flex-shrink: 0;
+  padding: 0.35rem 1rem;
+  background: #1a1a2e;
+  color: #888;
+  border-top: 1px solid #333;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 0.8rem;
+}
