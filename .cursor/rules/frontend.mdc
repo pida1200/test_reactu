@@ -1,0 +1,14 @@
+---
+description: 
+globs: "src/**/*.{jsx, js}"
+alwaysApply: false
+---
+
+# Frontend (React)
+
+- Komponenty jako funkce, hooks pro stav a side-effecty.
+- API volání pouze na vlastní backend (`/api`), žádné přímé externí služby.
+- Pro navigaci používat React Router (routes v `main.jsx`, odkazy v `Layout.jsx`).
+- Společné styly v `App.css`, layout a menu v `Layout.jsx`.
+
+- do patičky přidej číslo verze.

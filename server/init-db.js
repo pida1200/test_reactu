@@ -17,7 +17,33 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_akcie_datum ON akcie(datum);
+
+  CREATE TABLE IF NOT EXISTS akcie_parametrizace (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nazev TEXT NOT NULL UNIQUE,
+    yahoo_symbol TEXT NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS idx_parametrizace_nazev ON akcie_parametrizace(nazev);
 `)
+
+const seedParametrizace = [
+  ['ČEZ', 'CEZ.PR'],
+  ['Komerční banka', 'KOMB.PR'],
+  ['Erste Group', 'EBS.VI'],
+  ['Philip Morris CR', 'TABAK.PR'],
+  ['VIG', 'VIG.VI'],
+]
+const insertParam = db.prepare('INSERT OR IGNORE INTO akcie_parametrizace (nazev, yahoo_symbol) VALUES (?, ?)')
+const insertParamMany = db.transaction((rows) => {
+  for (const row of rows) {
+    insertParam.run(...row)
+  }
+})
+const countParam = db.prepare('SELECT COUNT(*) as c FROM akcie_parametrizace').get()
+if (countParam.c === 0) {
+  insertParamMany(seedParametrizace)
+  console.log('Parametrizace: vloženo', seedParametrizace.length, 'výchozích záznamů.')
+}
 
 const insert = db.prepare(`
   INSERT INTO akcie (akcie, hodnota_czk, zmena_ve_dni, datum) VALUES (?, ?, ?, ?)

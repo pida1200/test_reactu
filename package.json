@@ -1,7 +1,7 @@
 {
   "name": "test_reactu",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,11 @@
     "server:init-db": "cd server && npm run init-db"
   },
   "dependencies": {
+    "chart.js": "^4.5.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

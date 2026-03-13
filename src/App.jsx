@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './App.css'
 
 const API_URL = '/api'
@@ -10,6 +11,7 @@ function isNetworkError(message) {
 }
 
 function App() {
+  const navigate = useNavigate()
   const [datum, setDatum] = useState(() => {
     const d = new Date()
     return d.toISOString().slice(0, 10)
@@ -20,6 +22,7 @@ function App() {
   const [loadingYahoo, setLoadingYahoo] = useState(null)
   const [symboly, setSymboly] = useState([])
   const [vybranaAkcie, setVybranaAkcie] = useState('')
+  const [vizual, setVizual] = useState('table')
 
   useEffect(() => {
     fetch(`${API_URL}/akcie/symboly`)
@@ -45,7 +48,8 @@ function App() {
   }, [datum])
 
   useEffect(() => {
-    loadAkcie()
+    const id = setTimeout(() => loadAkcie(), 0)
+    return () => clearTimeout(id)
   }, [loadAkcie])
 
   const handleNačístYahoo = (akcieNazev) => {
@@ -70,12 +74,7 @@ function App() {
   }
 
   return (
-    <div className="layout">
-      <header className="header">
-        <h1>Moje první aplikace v Reactu</h1>
-      </header>
-
-      <main className="main">
+    <main className="main">
         <div className="main-content">
           <div className="date-picker-wrap">
             <label htmlFor="datum">Datum:</label>
@@ -112,6 +111,16 @@ function App() {
               >
                 {loadingYahoo ? 'Načítám…' : 'Načíst z Yahoo a uložit'}
               </button>
+              <button
+                type="button"
+                className="btn-yahoo btn-graf"
+                disabled={!vybranaAkcie}
+                onClick={() => {
+                  if (vybranaAkcie) navigate(`/graf?akcie=${encodeURIComponent(vybranaAkcie)}`)
+                }}
+              >
+                Zobrazit graf
+              </button>
             </div>
           )}
 
@@ -129,57 +138,118 @@ function App() {
           {loading && <p className="loading">Načítám…</p>}
 
           {!loading && !error && (
-            <div className="table-wrap">
-              <table className="akcie-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Akcie</th>
-                    <th scope="col">Hodnota (CZK)</th>
-                    <th scope="col">Změna ve dni</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {akcie.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="no-data">Pro zvolené datum nejsou žádná data.</td>
-                    </tr>
-                  ) : (
-                    akcie.map((radek) => (
-                      <tr key={`${radek.akcie}-${radek.datum}`}>
-                        <td>{radek.akcie}</td>
-                        <td>{Number(radek.hodnotaCzk).toLocaleString('cs-CZ')}</td>
-                        <td className={radek.zmena?.startsWith('+') ? 'zmena-plus' : 'zmena-minus'}>
-                          {radek.zmena ?? '—'}
-                        </td>
-                        <td className="td-button">
+            <>
+              <div className="variant-picker">
+                <span className="variant-label">Zobrazení:</span>
+                {(['table', 'cards', 'list']).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    className={`variant-btn ${vizual === v ? 'active' : ''}`}
+                    onClick={() => setVizual(v)}
+                  >
+                    {v === 'table' && 'Tabulka'}
+                    {v === 'cards' && 'Karty'}
+                    {v === 'list' && 'Seznam'}
+                  </button>
+                ))}
+              </div>
+              <div className={`prehled-wrap prehled-${vizual}`}>
+                {vizual === 'table' && (
+                  <div className="table-wrap">
+                    <table className="akcie-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Akcie</th>
+                          <th scope="col">Hodnota (CZK)</th>
+                          <th scope="col">Změna ve dni</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {akcie.length === 0 ? (
+                          <tr>
+                            <td colSpan={3} className="no-data">Pro zvolené datum nejsou žádná data.</td>
+                          </tr>
+                        ) : (
+                          akcie.map((radek) => (
+                            <tr key={`${radek.akcie}-${radek.datum}`}>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="link-akcie"
+                                  onClick={() => navigate(`/graf?akcie=${encodeURIComponent(radek.akcie)}`)}
+                                >
+                                  {radek.akcie}
+                                </button>
+                              </td>
+                              <td>{Number(radek.hodnotaCzk).toLocaleString('cs-CZ')}</td>
+                              <td className={radek.zmena?.startsWith('+') ? 'zmena-plus' : 'zmena-minus'}>
+                                {radek.zmena ?? '—'}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {vizual === 'cards' && (
+                  <div className="cards-wrap">
+                    {akcie.length === 0 ? (
+                      <p className="no-data cards-no-data">Pro zvolené datum nejsou žádná data.</p>
+                    ) : (
+                      akcie.map((radek) => (
+                        <div key={`${radek.akcie}-${radek.datum}`} className="akcie-card">
                           <button
                             type="button"
-                            className="btn-yahoo"
-                            disabled={loadingYahoo !== null}
-                            onClick={() => handleNačístYahoo(radek.akcie)}
+                            className="akcie-card-name link-akcie"
+                            onClick={() => navigate(`/graf?akcie=${encodeURIComponent(radek.akcie)}`)}
                           >
-                            {loadingYahoo === radek.akcie ? 'Načítám…' : 'Načíst z Yahoo'}
+                            {radek.akcie}
                           </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                          <div className="akcie-card-value">{Number(radek.hodnotaCzk).toLocaleString('cs-CZ')} CZK</div>
+                          <div className={`akcie-card-zmena ${radek.zmena?.startsWith('+') ? 'zmena-plus' : 'zmena-minus'}`}>
+                            {radek.zmena ?? '—'}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+                {vizual === 'list' && (
+                  <div className="list-wrap">
+                    {akcie.length === 0 ? (
+                      <p className="no-data list-no-data">Pro zvolené datum nejsou žádná data.</p>
+                    ) : (
+                      <ul className="akcie-list">
+                        {akcie.map((radek) => (
+                          <li key={`${radek.akcie}-${radek.datum}`} className="akcie-list-item">
+                            <button
+                              type="button"
+                              className="list-name link-akcie"
+                              onClick={() => navigate(`/graf?akcie=${encodeURIComponent(radek.akcie)}`)}
+                            >
+                              {radek.akcie}
+                            </button>
+                            <span className="list-value">{Number(radek.hodnotaCzk).toLocaleString('cs-CZ')} CZK</span>
+                            <span className={`list-zmena ${radek.zmena?.startsWith('+') ? 'zmena-plus' : 'zmena-minus'}`}>
+                              {radek.zmena ?? '—'}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            </>
           )}
 
           {!loading && !error && akcie.length > 0 && (
-            <p className="hint">U nových akcií přidej symbol do serveru (server/yahoo-symbols.js).</p>
+            <p className="hint">Nové akcie přidej v menu Parametrizace akcií.</p>
           )}
         </div>
-      </main>
-
-      <footer className="footer">
-        <p>Zápatí</p>
-      </footer>
-    </div>
+    </main>
   )
 }
 

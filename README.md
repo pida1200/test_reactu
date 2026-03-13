@@ -1,6 +1,16 @@
 # test_reactu – Akcie (React + Node API)
 
-React aplikace s tabulkou akcií, výběrem data a načítáním kurzů z Yahoo Finance. Backend: Node.js (Express) + SQLite.
+**Verze:** 1.0.0
+
+React aplikace s tabulkou akcií, výběrem data, načítáním kurzů z Yahoo Finance a grafy. Backend: Node.js (Express) + SQLite.
+
+## Pravidla architektury
+
+Aplikace je třívrstvá; pravidla jsou v `.cursor/rules/`:
+
+- **Frontend** (React): pouze UI a volání vlastního API
+- **Backend** (Node.js): business logika a integrace (Yahoo Finance apod.)
+- **DB** (SQLite): perzistence
 
 ## Spuštění
 
