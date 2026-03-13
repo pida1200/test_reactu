@@ -6,6 +6,7 @@ import { dirname, join } from 'path'
 import { fetchYahooPriceForDate, fetchYahooChartRange } from './yahoo-chart.js'
 import { initSchema, query, queryOne, execute, ensureDefaultParametrizace } from './db.js'
 import { log } from './logger.js'
+import { isValidDatum } from './utils.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -165,13 +166,6 @@ app.get('/api/akcie/graf', async (req, res) => {
     res.status(500).json({ error: err.message || 'Nepodařilo se načíst data z Yahoo Finance.' })
   }
 })
-
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
-function isValidDatum(str) {
-  if (!str || !DATE_REGEX.test(str)) return false
-  const d = new Date(str)
-  return !Number.isNaN(d.getTime())
-}
 
 app.get('/api/akcie', async (req, res) => {
   const datum = req.query.datum

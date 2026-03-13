@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "init-db": "node init-db.js"
+    "init-db": "node init-db.js",
+    "test": "node --test"
   },
   "dependencies": {
     "cors": "^2.8.5",
