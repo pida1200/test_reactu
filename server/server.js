@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import { rateLimit } from 'express-rate-limit'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { fetchYahooPriceForDate, fetchYahooChartRange } from './yahoo-chart.js'
@@ -11,6 +12,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+app.use('/api', apiLimiter)
 
 await initSchema()
 log.info('Server start', { schema: 'ok' })
