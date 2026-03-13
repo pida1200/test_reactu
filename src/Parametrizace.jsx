@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import './App.css'
 
 const API_URL = '/api'
@@ -11,6 +11,10 @@ export default function Parametrizace() {
   const [yahooSymbol, setYahooSymbol] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [doplnovani, setDoplnovani] = useState(false)
+  const [filter, setFilter] = useState('')
+  const [sortCol, setSortCol] = useState('nazev')
+  const [sortDir, setSortDir] = useState('asc')
 
   const loadParametrizace = useCallback(() => {
     setLoading(true)
@@ -73,6 +77,35 @@ export default function Parametrizace() {
     setYahooSymbol('')
   }
 
+  const handleDoplnitVychozi = () => {
+    setDoplnovani(true)
+    setError(null)
+    fetch(`${API_URL}/akcie/doplnit-vychozi`, { method: 'POST' })
+      .then((res) => {
+        if (!res.ok) return res.json().then((d) => Promise.reject(new Error(d.error || res.statusText)))
+        return res.json()
+      })
+      .then(() => loadParametrizace())
+      .catch((err) => setError(err.message))
+      .finally(() => setDoplnovani(false))
+  }
+
+  const filteredAndSorted = useMemo(() => {
+    const f = filter.trim().toLowerCase()
+    let list = f ? seznam.filter((r) => (r.nazev || '').toLowerCase().includes(f) || (r.yahooSymbol || '').toLowerCase().includes(f)) : [...seznam]
+    const col = sortCol === 'nazev' ? 'nazev' : 'yahooSymbol'
+    list.sort((a, b) => {
+      const cmp = (a[col] || '').localeCompare(b[col] || '')
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+    return list
+  }, [seznam, filter, sortCol, sortDir])
+
+  const toggleSort = (col) => {
+    setSortDir(sortCol === col && sortDir === 'asc' ? 'desc' : 'asc')
+    setSortCol(col)
+  }
+
   const handleDelete = (id) => {
     if (!window.confirm('Opravdu smazat tento záznam?')) return
     setSaving(true)
@@ -87,10 +120,21 @@ export default function Parametrizace() {
   }
 
   return (
-    <main className="main">
+    <main className="main main-top">
       <div className="main-content main-content-wide">
         <h2 className="page-title">Parametrizace akcií</h2>
         <p className="hint">Názvy akcií a odpovídající symboly Yahoo Finance (např. CEZ.PR, KOMB.PR). Tyto údaje se používají pro načítání kurzů na stránce Přehled.</p>
+
+        <div className="param-form" style={{ marginBottom: '0.5rem' }}>
+          <button
+            type="button"
+            className="btn-yahoo"
+            disabled={doplnovani}
+            onClick={handleDoplnitVychozi}
+          >
+            {doplnovani ? 'Doplňuji…' : 'Doplnit výchozí akcie (ČEZ, Moneta, Colt CZ, …)'}
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="param-form">
           <input
@@ -125,24 +169,42 @@ export default function Parametrizace() {
         {loading && <p className="loading">Načítám…</p>}
 
         {!loading && !error && (
-          <div className="table-wrap">
-            <table className="akcie-table">
-              <thead>
-                <tr>
-                  <th scope="col">Název</th>
-                  <th scope="col">Yahoo symbol</th>
-                  <th scope="col">Akce</th>
-                </tr>
-              </thead>
-              <tbody>
-                {seznam.length === 0 ? (
+          <>
+            <div className="table-toolbar">
+              <input
+                type="text"
+                placeholder="Filtrovat (název, symbol…)"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="filter-input"
+              />
+            </div>
+            <div className="table-wrap">
+              <table className="akcie-table">
+                <thead>
                   <tr>
-                    <td colSpan={3} className="no-data">
-                      Žádné záznamy. Přidej první akcii výše.
-                    </td>
+                    <th scope="col">
+                      <button type="button" className="th-sort" onClick={() => toggleSort('nazev')}>
+                        Název {sortCol === 'nazev' && (sortDir === 'asc' ? '↑' : '↓')}
+                      </button>
+                    </th>
+                    <th scope="col">
+                      <button type="button" className="th-sort" onClick={() => toggleSort('yahooSymbol')}>
+                        Yahoo symbol {sortCol === 'yahooSymbol' && (sortDir === 'asc' ? '↑' : '↓')}
+                      </button>
+                    </th>
+                    <th scope="col">Akce</th>
                   </tr>
-                ) : (
-                  seznam.map((row) => (
+                </thead>
+                <tbody>
+                  {filteredAndSorted.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="no-data">
+                        {seznam.length === 0 ? 'Žádné záznamy. Přidej první akcii výše.' : 'Žádné záznamy nevyhovují filtru.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAndSorted.map((row) => (
                     <tr key={row.id}>
                       <td>{row.nazev}</td>
                       <td><code>{row.yahooSymbol}</code></td>
@@ -165,11 +227,12 @@ export default function Parametrizace() {
                         </button>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </main>

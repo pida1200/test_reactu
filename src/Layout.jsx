@@ -16,6 +16,9 @@ export default function Layout() {
           <NavLink to="/graf" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Graf akcií
           </NavLink>
+          <NavLink to="/log" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            Log
+          </NavLink>
         </nav>
       </header>
       <Outlet />

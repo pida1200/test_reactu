@@ -30,11 +30,15 @@ Volitelně naplň DB seed daty: `npm run server:init-db` (jednou).
 
 ## Docker (větev docker-deploy)
 
+Používá **PostgreSQL** v kontejneru (SQLite je nahrazeno).
+
 ```bash
 docker compose up --build
 ```
 
-Aplikace poběží na **http://localhost:3000** (API i frontend). DB je v Docker volume `akcie-data` (persistence mezi starty). Pro první naplnění parametrizace použij v aplikaci menu Parametrizace akcií, nebo spusť jednorázově kontejner s `npm run server:init-db` (vyžaduje úpravu pro DB_PATH).
+Aplikace poběží na **http://localhost:3000** (API i frontend). PostgreSQL běží v kontejneru `postgres`, data v volume `postgres-data`. Výchozí parametrizace akcií se vytvoří při prvním startu. Pro seed dat akcií spusť jednorázově: `docker compose run --rm app node server/init-db.js` (vyžaduje DATABASE_URL z compose).
+
+**Lokální vývoj bez Dockeru:** Spusť PostgreSQL (např. `docker compose up postgres -d`) a nastav `DATABASE_URL=postgresql://akcie:akcie@localhost:5432/akcie`. Pak `npm run server` a `npm run dev`.
 
 ## Stack
 

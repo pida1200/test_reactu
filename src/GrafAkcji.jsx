@@ -121,7 +121,7 @@ export default function GrafAkcji() {
   }
 
   return (
-    <main className="main">
+    <main className="main main-top">
       <div className="main-content main-content-wide">
         <h2 className="page-title">Graf akcií</h2>
         <p className="hint">Vyber akcii a období (týden, měsíc, rok) pro zobrazení vývoje kurzu.</p>

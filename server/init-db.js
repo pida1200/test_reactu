@@ -1,53 +1,4 @@
-import Database from 'better-sqlite3'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const dbPath = join(__dirname, 'akcie.db')
-
-const db = new Database(dbPath)
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS akcie (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    akcie TEXT NOT NULL,
-    hodnota_czk REAL NOT NULL,
-    zmena_ve_dni TEXT NOT NULL,
-    datum DATE NOT NULL
-  );
-
-  CREATE INDEX IF NOT EXISTS idx_akcie_datum ON akcie(datum);
-
-  CREATE TABLE IF NOT EXISTS akcie_parametrizace (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nazev TEXT NOT NULL UNIQUE,
-    yahoo_symbol TEXT NOT NULL
-  );
-  CREATE INDEX IF NOT EXISTS idx_parametrizace_nazev ON akcie_parametrizace(nazev);
-`)
-
-const seedParametrizace = [
-  ['ČEZ', 'CEZ.PR'],
-  ['Komerční banka', 'KOMB.PR'],
-  ['Erste Group', 'EBS.VI'],
-  ['Philip Morris CR', 'TABAK.PR'],
-  ['VIG', 'VIG.VI'],
-]
-const insertParam = db.prepare('INSERT OR IGNORE INTO akcie_parametrizace (nazev, yahoo_symbol) VALUES (?, ?)')
-const insertParamMany = db.transaction((rows) => {
-  for (const row of rows) {
-    insertParam.run(...row)
-  }
-})
-const countParam = db.prepare('SELECT COUNT(*) as c FROM akcie_parametrizace').get()
-if (countParam.c === 0) {
-  insertParamMany(seedParametrizace)
-  console.log('Parametrizace: vloženo', seedParametrizace.length, 'výchozích záznamů.')
-}
-
-const insert = db.prepare(`
-  INSERT INTO akcie (akcie, hodnota_czk, zmena_ve_dni, datum) VALUES (?, ?, ?, ?)
-`)
+import { initSchema, queryOne, pool } from './db.js'
 
 const seedData = [
   ['ČEZ', 892, '+1,2 %', '2025-03-10'],
@@ -67,20 +18,28 @@ const seedData = [
   ['VIG', 545, '-1,3 %', '2025-03-12'],
 ]
 
-const insertMany = db.transaction((rows) => {
-  for (const row of rows) {
-    insert.run(...row)
-  }
-})
+async function main() {
+  try {
+    await initSchema()
 
-try {
-  const count = db.prepare('SELECT COUNT(*) as c FROM akcie').get()
-  if (count.c === 0) {
-    insertMany(seedData)
-    console.log('DB inicializována, vloženo', seedData.length, 'řádků.')
-  } else {
-    console.log('DB již obsahuje data.')
+    const countAkcie = await queryOne('SELECT COUNT(*) AS c FROM akcie')
+    if (Number(countAkcie.c) === 0) {
+      for (const [akcie, hodnota_czk, zmena_ve_dni, datum] of seedData) {
+        await pool.query(
+          'INSERT INTO akcie (akcie, hodnota_czk, zmena_ve_dni, datum) VALUES ($1, $2, $3, $4)',
+          [akcie, hodnota_czk, zmena_ve_dni, datum],
+        )
+      }
+      console.log('DB inicializována, vloženo', seedData.length, 'řádků.')
+    } else {
+      console.log('Tabulka akcie již obsahuje data.')
+    }
+  } finally {
+    await pool.end()
   }
-} finally {
-  db.close()
 }
+
+main().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})
