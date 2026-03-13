@@ -1,0 +1,14 @@
+node_modules
+server/node_modules
+dist
+.git
+.gitignore
+*.log
+.env
+.env.*
+.vscode
+.idea
+.cursor
+*.md
+!README.md
+server/akcie.db

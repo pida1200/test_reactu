@@ -28,6 +28,14 @@ Aplikace je třívrstvá; pravidla jsou v `.cursor/rules/`:
 Pokud vidíš „Chyba: Failed to fetch“, API neběží – spusť nejdřív `npm run server`.
 Volitelně naplň DB seed daty: `npm run server:init-db` (jednou).
 
+## Docker (větev docker-deploy)
+
+```bash
+docker compose up --build
+```
+
+Aplikace poběží na **http://localhost:3000** (API i frontend). DB je v Docker volume `akcie-data` (persistence mezi starty). Pro první naplnění parametrizace použij v aplikaci menu Parametrizace akcií, nebo spusť jednorázově kontejner s `npm run server:init-db` (vyžaduje úpravu pro DB_PATH).
+
 ## Stack
 
 - React (Vite), Express, SQLite (better-sqlite3), Yahoo Finance Chart API

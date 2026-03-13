@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - PUBLIC_DIR=/app/dist
+      - DB_PATH=/app/server/data/akcie.db
+    volumes:
+      # Persistence DB mezi starty
+      - akcie-data:/app/server/data
+
+volumes:
+  akcie-data:

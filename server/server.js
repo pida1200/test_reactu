@@ -6,7 +6,7 @@ import { dirname, join } from 'path'
 import { fetchYahooPriceForDate, fetchYahooChartRange } from './yahoo-chart.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const dbPath = join(__dirname, 'akcie.db')
+const dbPath = process.env.DB_PATH || join(__dirname, 'akcie.db')
 
 const app = express()
 app.use(cors())
@@ -225,6 +225,13 @@ app.post('/api/akcie/fetch-yahoo', async (req, res) => {
     })
   }
 })
+
+if (process.env.PUBLIC_DIR) {
+  app.use(express.static(process.env.PUBLIC_DIR))
+  app.get('*', (req, res) => {
+    res.sendFile(join(process.env.PUBLIC_DIR, 'index.html'))
+  })
+}
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
