@@ -1,4 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom'
+import pkg from '../package.json'
 import './App.css'
 
 export default function Layout() {
@@ -23,7 +24,9 @@ export default function Layout() {
       </header>
       <Outlet />
       <footer className="footer">
-        <p>Zápatí</p>
+        <p>
+          Zápatí – verze {pkg.version}
+        </p>
       </footer>
     </div>
   )

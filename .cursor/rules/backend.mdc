@@ -8,5 +8,5 @@ alwaysApply: false
 
 - Business logika a integrace (Yahoo Finance, jiné API) pouze zde.
 - API pod cestou `/api/...`. Validace vstupu (datum, parametry) na serveru.
-- SQLite přes `better-sqlite3`, soubor `akcie.db` v `server/`.
+- PostgreSQL přes `pg` (připojení přes `DATABASE_URL`), datový model v DB.
 - Externí služby volat z backendu (např. `yahoo-chart.js`), nikdy z frontendu.

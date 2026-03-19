@@ -1,5 +1,5 @@
 ---
-description: Třívrstvá architektura – frontend React, backend Node.js, DB SQLite
+description: Třívrstvá architektura – frontend React, backend Node.js, DB PostgreSQL
 alwaysApply: true
 ---
 
@@ -9,7 +9,7 @@ Aplikace je **třívrstvá**:
 
 1. **Frontend** – React (Vite). Pouze UI, volání API a zobrazení dat.
 2. **Backend** – Node.js (Express). Veškerá business logika a integrace.
-3. **Databáze** – SQLite (better-sqlite3). Perzistence dat.
+3. **Databáze** – PostgreSQL (pg). Perzistence dat.
 
 ## Pravidla
 
