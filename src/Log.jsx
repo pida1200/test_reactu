@@ -72,7 +72,7 @@ export default function Log() {
   }
 
   return (
-    <main className="main main-top">
+    <main className="main main-top app-page--table">
       <div className="main-content main-content-wide">
         <h2 className="page-title">Log aplikace</h2>
         <p className="hint">Aplikační log z databáze.</p>

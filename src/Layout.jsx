@@ -20,6 +20,9 @@ export default function Layout() {
           <NavLink to="/log" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Log
           </NavLink>
+          <NavLink to="/demo" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            Demo komponenty
+          </NavLink>
         </nav>
       </header>
       <Outlet />

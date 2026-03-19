@@ -42,11 +42,17 @@
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: 0.9rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .nav-link:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
 }
 
 .nav-link.active {
@@ -65,8 +71,9 @@
 }
 
 .main.main-top {
+  /* Horizontální centrování, bez centrování na ose Y. */
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: center;
   overflow: auto;
 }
 
@@ -82,6 +89,34 @@
 
 .main.main-top .main-content {
   max-height: none;
+}
+
+/* Figma visual styling for "/" page only (appearance only). */
+.app-page .filter-input {
+  background: #84da21;
+  border: 1px solid #444;
+  color: #64748b;
+}
+
+.app-page .filter-input::placeholder {
+  color: #64748b;
+}
+
+.app-page .date-input {
+  background: #e94e27;
+  border: 1px solid #444;
+  color: #e2e8f0;
+}
+
+.app-page--table .akcie-table thead {
+  background: rgba(56, 99, 255, 0.5);
+  color: #111827;
+  box-shadow: none;
+}
+
+.app-page--table .akcie-table thead th {
+  border-bottom: none;
+  color: #111827;
 }
 
 .toolbar-row {
@@ -116,6 +151,11 @@
   border-color: #646cff;
 }
 
+.filter-input:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
+}
+
 .th-sort {
   background: none;
   border: none;
@@ -126,10 +166,17 @@
   cursor: pointer;
   text-align: left;
   width: 100%;
+  border-radius: 8px;
+  transition: color 0.15s ease;
 }
 
 .th-sort:hover {
   color: #646cff;
+}
+
+.th-sort:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
 }
 
 .prehled-wrap {
@@ -336,6 +383,7 @@
   background: #334155;
   color: #e2e8f0;
   cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn-yahoo:hover:not(:disabled) {
@@ -360,10 +408,17 @@
   color: #646cff;
   cursor: pointer;
   text-decoration: none;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 .link-akcie:hover {
   text-decoration: underline;
+}
+
+.link-akcie:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 
 .akcie-card .link-akcie {
@@ -450,17 +505,49 @@
   align-items: center;
   gap: 1rem;
   flex-shrink: 0;
+  background: #2d2d44;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
 .period-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 0.2rem;
+  overflow: hidden;
+}
+
+.period-btn {
+  border-radius: 10px;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.period-btn:hover:not(:disabled) {
+  background: rgba(100, 108, 255, 0.12);
+  border-color: rgba(100, 108, 255, 0.25);
+  color: #fff;
+}
+
+.period-btn:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
 }
 
 .period-btn.active {
   background: #646cff;
   border-color: #646cff;
   color: #fff;
+  box-shadow: 0 8px 24px rgba(100, 108, 255, 0.25);
 }
 
 .graf-wrap {
@@ -468,6 +555,9 @@
   height: 360px;
   flex: 1;
   min-height: 280px;
+  background: #2d2d44;
+  border: 1px solid #444;
+  border-radius: 12px;
 }
 
 .akcie-table {
@@ -476,6 +566,7 @@
   min-width: 320px;
   background: #fff;
   font-size: 0.9rem;
+  color: #111827;
 }
 
 .akcie-table th,
@@ -483,6 +574,7 @@
   padding: 0.5rem 0.75rem;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
+  color: #111827;
 }
 
 .akcie-table thead {
@@ -504,7 +596,15 @@
 }
 
 .akcie-table tbody tr:hover {
-  background: #f9fafb;
+  background: transparent;
+}
+
+.akcie-table tbody tr:nth-child(odd) td {
+  background: #f3f4f6;
+}
+
+.akcie-table tbody tr:hover td {
+  background: #e5e7eb !important;
 }
 
 .zmena-plus {
@@ -529,6 +629,136 @@
 .footer p {
   margin: 0;
   font-size: 0.8rem;
+}
+
+/* Demo stránky pro design komponenty */
+.demo-page {
+  padding-top: 0.25rem;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.demo-table-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.demo-table-wrap {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.demo-table {
+  border-radius: 12px;
+}
+
+.demo-table-2 tbody tr:nth-child(odd) td {
+  background: #f3f4f6;
+}
+
+.demo-table-2 tbody tr:hover td {
+  background: #e5e7eb !important;
+}
+
+.demo-table-3 th,
+.demo-table-3 td {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+.demo-table-3 .td-zmena {
+  text-align: right;
+}
+
+.td-akcie {
+  width: 40%;
+}
+
+.td-hodnota {
+  width: 30%;
+}
+
+.td-zmena {
+  width: 30%;
+}
+
+.demo-card {
+  position: relative;
+  background: #2d2d44;
+  border: 1px solid #444;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 1rem;
+  min-height: 220px;
+  outline: none;
+}
+
+.demo-card:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.demo-card-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.demo-card-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.demo-card-subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.demo-card-text {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.demo-spotlight-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.demo-card.demo-spotlight:hover .demo-spotlight-glow {
+  opacity: 1;
+}
+
+.demo-pixel {
+  padding: 0;
+}
+
+.demo-pixel-canvas {
+  display: block;
+  width: 100%;
+  height: 190px;
+  background: transparent;
+}
+
+.demo-card-body-front {
+  padding: 0.85rem 1rem 1rem;
+}
+
+.demo-tilt {
+  transform-style: preserve-3d;
+  transition: transform 180ms ease;
 }
 
 .log-toolbar {

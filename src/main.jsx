@@ -7,6 +7,7 @@ import App from './App.jsx'
 import Parametrizace from './Parametrizace.jsx'
 import GrafAkcji from './GrafAkcji.jsx'
 import Log from './Log.jsx'
+import DemoKomponenty from './DemoKomponenty.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="parametrizace" element={<Parametrizace />} />
           <Route path="graf" element={<GrafAkcji />} />
           <Route path="log" element={<Log />} />
+          <Route path="demo" element={<DemoKomponenty />} />
         </Route>
       </Routes>
     </BrowserRouter>

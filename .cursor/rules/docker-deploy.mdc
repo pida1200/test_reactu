@@ -1,0 +1,21 @@
+---
+description: Pravidla pro Docker deploy a restart
+alwaysApply: true
+---
+
+# Docker pravidla
+
+- Kdykoli uživatel požádá o „aktualizuj docker“, „deploy do dockeru“, „restart aplikace“ nebo podobně, považuj to za požadavek na nasazení pomocí `docker compose`.
+- Postup nasazení:
+  1. Spusť v rootu projektu `docker compose up --build -d`.
+  2. Ověř `docker compose ps`:
+     - `postgres` má být v stavu `healthy`.
+     - `app` má být v stavu `Up` a mít mapovaný port `3000->3000`.
+  3. Pokud `postgres` není `healthy`, opakuj krok 2 po krátkém čekání (až do úspěchu nebo dokud se nedostaneš k jasné chybě).
+  4. Když to nejde (chyba v buildu nebo v běhu), vytáhni poslední logy:
+     - `docker compose logs --tail=200 app`
+     - `docker compose logs --tail=200 postgres`
+     a vrať uživateli konkrétní důvod.
+- Pokud uživatel výslovně neřekne, že máš smazat data, **nikdy** nemaž žádné Docker volumy ani neprováděj destruktivní akce.
+- Vždy preferuj `docker compose` nad ručním `docker build`/`docker run`.
+

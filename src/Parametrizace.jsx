@@ -120,7 +120,7 @@ export default function Parametrizace() {
   }
 
   return (
-    <main className="main main-top">
+    <main className="main main-top app-page--table">
       <div className="main-content main-content-wide">
         <h2 className="page-title">Parametrizace akcií</h2>
         <p className="hint">Názvy akcií a odpovídající symboly Yahoo Finance (např. CEZ.PR, KOMB.PR). Tyto údaje se používají pro načítání kurzů na stránce Přehled.</p>

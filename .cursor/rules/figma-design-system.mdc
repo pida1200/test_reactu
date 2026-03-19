@@ -1,0 +1,72 @@
+---
+description: >
+  Pravidla pro implementaci Figma designů do tohoto React (Vite) projektu.
+  Zaměřeno na převod Figma výstupu (typicky React + Tailwind) do existujícího
+  styling přístupu v projektu (globální CSS v `src/App.css` + layout v `src/Layout.jsx`).
+globs: "src/**/*.{jsx,js,css}"
+alwaysApply: false
+---
+
+# Figma -> React (CSS) pravidla pro tento projekt
+
+## Kontext projektu
+- Frontend: React (Vite) s React Routerem. Stránky jsou v `src/*.jsx` a routy jsou v `src/main.jsx`.
+- Styling: primárně globální CSS v `src/App.css` (plus základ v `src/index.css`). Projekt nepoužívá Tailwind.
+- Business logika / integrace: držet v rámci UI logiky komponent (fetch na vlastní backend pod `/api`), nikdy nevkládat externí volání API do frontendu.
+- Backend: Node.js (Express) vystavuje API pod `/api/...`.
+- DB: PostgreSQL.
+
+## Povinný Figma->kód workflow
+1. Vždy začni `get_design_context` pro konkrétní Figma node/page (např. frame pro danou routu).
+2. Pokud je výsledek příliš velký nebo nejasný, použij `get_metadata` a dohraj jen požadované nodeId přes `get_design_context`.
+3. Pro vizuální kontrolu vždy použij `get_screenshot` pro daný node (pomůže ověřit barvy, spacing a stavové varianty).
+4. Až potom implementuj do kódu:
+   - překlad designu do tohoto projektu (React + existující CSS),
+   - mapování barev/typografie do stylů, které projekt už používá v `src/App.css`.
+5. Vždy ověř look & feel v prohlížeči nebo přes opakované zachycení ve Figuře.
+
+## Převedení Figma výstupu (typicky React + Tailwind) do tohoto projektu
+- IMPORTANT: Nikdy nepřidávej Tailwind ani nevkládej Tailwind jako dependency.
+- IMPORTANT: Tailwind utility třídy z Figma výstupu přelož do CSS pravidel v `src/App.css`.
+- Pokud design vyžaduje změnu jen vzhledu konkrétní stránky, scope-uj styly lokálně:
+  - přidej wrapper třídu na stránku (např. `.app-page`) do dané komponenty,
+  - uprav CSS selektory tak, aby neovlivňovaly ostatní stránky (např. `.app-page .filter-input`).
+- Když Figma výstup používá konkrétní hex barvy:
+  - preferuj re-use hodnot z `src/App.css` (pro konzistenci),
+  - nevymýšlej nové brand barvy, pokud už podobná barva v projektu existuje.
+
+## Struktura komponent a routy
+- Page komponenty jsou exportované funkce v `src/` (např. `App.jsx`, `Parametrizace.jsx`, `GrafAkcji.jsx`, `Log.jsx`, `DemoKomponenty.jsx`).
+- Layout je `src/Layout.jsx` a obsahuje hlavní navigaci.
+- Routing je v `src/main.jsx`:
+  - `/` index route (render `App`)
+  - `/parametrizace`
+  - `/graf`
+  - `/log`
+  - `/demo`
+
+## Styling konvence v tomto repu
+- Preferuj úpravy v `src/App.css`:
+  - UI prvky (tlačítka, tabulky, filtry, graf wrapper) mají už existující třídy.
+  - pro nové varianty (pokud jsou potřeba) vytvoř CSS třídy v `src/App.css` ve stejné podobě jako existující bloky.
+- Nezasahuj bez dobrého důvodu do `src/index.css` (base styly).
+- Tabulky:
+  - zachovat `border-collapse`, paddings a `thead`/`tbody` styly,
+  - pro scroll používat existující wrappery (např. `overflow: auto`).
+- Responzivita:
+  - projekt používá `max-width` a `flex-wrap`,
+  - neaplikuj hardcoded šířky mimo existující pattern; zachovej overflow a max-width chování.
+
+## A11y (prakticky)
+- IMPORTANT: Zachovávej `label htmlFor` a `placeholder`/`aria` texty, aby testy zůstaly stabilní.
+- IMPORTANT: Udržuj `:focus-visible` styly (outline) u interaktivních prvků (input, odkazy, tlačítka).
+
+## Testy a validace
+- IMPORTANT: Po změně vzhledu spusť `npm run test:run` (Vitest).
+- Pokud vzhled ovlivní DOM strukturu nebo accessible jména/placeholdery, aktualizuj testy v `src/App.test.jsx`.
+
+## Zakázané / rizikové změny
+- IMPORTANT: Neměnit business logiku a fetchy, pokud uživatel výslovně nepožaduje “změnit logiku”.
+- IMPORTANT: Žádné externí API call z frontendu (dodržet architekturu).
+- IMPORTANT: Nepřidávat nové UI knihovny bez výslovného požadavku.
+

@@ -96,7 +96,7 @@ function App() {
   }
 
   return (
-    <main className="main main-top">
+    <main className="main main-top app-page app-page--table">
       <div className="main-content">
         <div className="toolbar-row">
           <div className="date-picker-wrap">
