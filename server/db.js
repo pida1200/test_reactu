@@ -59,6 +59,9 @@ export async function initSchema() {
       )
     `)
     await client.query('CREATE INDEX IF NOT EXISTS idx_app_log_created_at ON app_log(created_at DESC)')
+    // Backwards-compatible migration (existing DBs may not have the column).
+    await client.query('ALTER TABLE app_log ADD COLUMN IF NOT EXISTS username VARCHAR(255)')
+    await client.query('CREATE INDEX IF NOT EXISTS idx_app_log_username ON app_log(username)')
 
     await ensureDefaultParametrizaceClient(client)
   } finally {

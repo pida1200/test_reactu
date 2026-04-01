@@ -39,7 +39,7 @@ app.get('/api/log', async (req, res) => {
     const limit = Math.min(Number(req.query.limit) || 200, 1000)
     const offset = Number(req.query.offset) || 0
     const rows = await query(
-      `SELECT id, created_at AS "createdAt", level, message, detail
+      `SELECT id, created_at AS "createdAt", username, level, message, detail
        FROM app_log ORDER BY id DESC LIMIT $1 OFFSET $2`,
       [limit, offset],
     )
@@ -51,19 +51,25 @@ app.get('/api/log', async (req, res) => {
   }
 })
 
+function getUsernameFromReq(req) {
+  const v = req.get('x-username')
+  return typeof v === 'string' && v.trim() ? v.trim() : null
+}
+
 app.get('/api/akcie/symboly', async (req, res) => {
   const rows = await query('SELECT nazev FROM akcie_parametrizace ORDER BY nazev')
   res.json(rows.map((r) => r.nazev))
 })
 
 app.post('/api/akcie/doplnit-vychozi', async (req, res) => {
+  const username = getUsernameFromReq(req)
   try {
     await ensureDefaultParametrizace()
     const rows = await query('SELECT nazev FROM akcie_parametrizace ORDER BY nazev')
-    log.info('Doplněny výchozí akcie', { pocet: rows.length })
+    log.info('Doplněny výchozí akcie', { username, pocet: rows.length })
     res.json({ ok: true, pocet: rows.length, symboly: rows.map((r) => r.nazev) })
   } catch (err) {
-    log.error('Doplnit výchozí akcie selhalo', err.message)
+    log.error('Doplnit výchozí akcie selhalo', { username, err: err.message })
     res.status(500).json({ error: err.message })
   }
 })
@@ -76,6 +82,7 @@ app.get('/api/akcie/parametrizace', async (req, res) => {
 })
 
 app.post('/api/akcie/parametrizace', async (req, res) => {
+  const username = getUsernameFromReq(req)
   const { nazev, yahooSymbol } = req.body || {}
   if (!nazev || !yahooSymbol || typeof nazev !== 'string' || typeof yahooSymbol !== 'string') {
     return res.status(400).json({ error: 'Chybí nebo jsou neplatné pole nazev a yahooSymbol.' })
@@ -90,7 +97,7 @@ app.post('/api/akcie/parametrizace', async (req, res) => {
       'INSERT INTO akcie_parametrizace (nazev, yahoo_symbol) VALUES ($1, $2) RETURNING id, nazev, yahoo_symbol AS "yahooSymbol"',
       [n, y],
     )
-    log.info('Parametrizace: přidána akcie', { nazev: n, yahooSymbol: y })
+    log.info('Parametrizace: přidána akcie', { username, nazev: n, yahooSymbol: y })
     res.status(201).json(rows[0])
   } catch (err) {
     if (err.code === '23505') {
@@ -101,6 +108,7 @@ app.post('/api/akcie/parametrizace', async (req, res) => {
 })
 
 app.put('/api/akcie/parametrizace/:id', async (req, res) => {
+  const username = getUsernameFromReq(req)
   const id = Number(req.params.id)
   if (!Number.isInteger(id) || id < 1) {
     return res.status(400).json({ error: 'Neplatné id.' })
@@ -122,7 +130,7 @@ app.put('/api/akcie/parametrizace/:id', async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Záznam nenalezen.' })
     }
-    log.info('Parametrizace: upravena akcie', { id, nazev: n })
+    log.info('Parametrizace: upravena akcie', { username, id, nazev: n })
     res.json(rows[0])
   } catch (err) {
     if (err.code === '23505') {
@@ -133,6 +141,7 @@ app.put('/api/akcie/parametrizace/:id', async (req, res) => {
 })
 
 app.delete('/api/akcie/parametrizace/:id', async (req, res) => {
+  const username = getUsernameFromReq(req)
   const id = Number(req.params.id)
   if (!Number.isInteger(id) || id < 1) {
     return res.status(400).json({ error: 'Neplatné id.' })
@@ -141,7 +150,7 @@ app.delete('/api/akcie/parametrizace/:id', async (req, res) => {
   if (rowCount === 0) {
     return res.status(404).json({ error: 'Záznam nenalezen.' })
   }
-  log.info('Parametrizace: smazána akcie', { id })
+  log.info('Parametrizace: smazána akcie', { username, id })
   res.status(204).send()
 })
 
@@ -231,6 +240,7 @@ app.post('/api/akcie/fetch-yahoo', async (req, res) => {
 })
 
 app.post('/api/akcie/fetch-yahoo-all', async (req, res) => {
+  const username = getUsernameFromReq(req)
   const { datum } = req.body || {}
   if (!datum) {
     return res.status(400).json({ error: 'Chybí datum v těle požadavku.' })
@@ -248,7 +258,7 @@ app.post('/api/akcie/fetch-yahoo-all', async (req, res) => {
       const result = await fetchYahooPriceForDate(symbol, datum)
       if (!result) {
         failed.push({ nazev, reason: 'Žádná data k datu' })
-        log.warn('Yahoo: žádná data', { nazev, symbol, datum })
+      log.warn('Yahoo: žádná data', { username, nazev, symbol, datum })
         continue
       }
       const { changePercent } = result
@@ -264,11 +274,11 @@ app.post('/api/akcie/fetch-yahoo-all', async (req, res) => {
       saved.push({ nazev, hodnotaCzk })
     } catch (err) {
       failed.push({ nazev, reason: err.message })
-      log.error('Yahoo fetch selhal', { nazev, symbol, datum, err: err.message })
+      log.error('Yahoo fetch selhal', { username, nazev, symbol, datum, err: err.message })
     }
   }
 
-  log.info('Načteny kurzy všech akcií z Yahoo', { datum, saved: saved.length, failed: failed.length })
+  log.info('Načteny kurzy všech akcií z Yahoo', { username, datum, saved: saved.length, failed: failed.length })
   res.json({ saved: saved.length, failed: failed.length, savedList: saved, failedList: failed })
 })
 

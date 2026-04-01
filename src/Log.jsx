@@ -51,6 +51,7 @@ export default function Log() {
     let list = f
       ? items.filter(
           (r) =>
+            (r.username || '').toLowerCase().includes(f) ||
             (r.message || '').toLowerCase().includes(f) ||
             (r.level || '').toLowerCase().includes(f) ||
             (r.detail || '').toLowerCase().includes(f),
@@ -59,6 +60,7 @@ export default function Log() {
     list.sort((a, b) => {
       let cmp = 0
       if (sortCol === 'createdAt') cmp = new Date(a.createdAt) - new Date(b.createdAt)
+      else if (sortCol === 'username') cmp = (a.username || '').localeCompare(b.username || '')
       else if (sortCol === 'level') cmp = (a.level || '').localeCompare(b.level || '')
       else if (sortCol === 'message') cmp = (a.message || '').localeCompare(b.message || '')
       return sortDir === 'asc' ? cmp : -cmp
@@ -105,6 +107,11 @@ export default function Log() {
                     </button>
                   </th>
                   <th scope="col">
+                    <button type="button" className="th-sort" onClick={() => toggleSort('username')}>
+                      User {sortCol === 'username' && (sortDir === 'asc' ? '↑' : '↓')}
+                    </button>
+                  </th>
+                  <th scope="col">
                     <button type="button" className="th-sort" onClick={() => toggleSort('level')}>
                       Úroveň {sortCol === 'level' && (sortDir === 'asc' ? '↑' : '↓')}
                     </button>
@@ -120,7 +127,7 @@ export default function Log() {
               <tbody>
                 {filteredAndSorted.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="no-data">
+                    <td colSpan={5} className="no-data">
                       {items.length === 0 ? 'Žádné záznamy v logu.' : 'Žádné záznamy nevyhovují filtru.'}
                     </td>
                   </tr>
@@ -128,6 +135,7 @@ export default function Log() {
                   filteredAndSorted.map((row) => (
                     <tr key={row.id} className={`log-row log-${row.level}`}>
                       <td className="log-time">{formatDate(row.createdAt)}</td>
+                      <td className="log-user">{row.username || '—'}</td>
                       <td className="log-level">{row.level}</td>
                       <td className="log-message">{row.message}</td>
                       <td className="log-detail">{row.detail ?? '—'}</td>

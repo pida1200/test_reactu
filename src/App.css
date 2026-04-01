@@ -25,6 +25,120 @@
   gap: 1rem;
 }
 
+.header-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-user {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.header-user-label {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.header-user-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.btn-logout {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.btn-logout:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
+}
+
+.login-page .main-content {
+  max-width: 420px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #1e1e2e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.login-label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.login-input {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #2d2d44;
+  color: #eee;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.login-input:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
+}
+
+.login-actions {
+  margin-top: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  border-radius: 10px;
+  border: 1px solid rgba(100, 108, 255, 0.5);
+  background: #646cff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  border-color: rgba(100, 108, 255, 0.9);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid rgba(100, 108, 255, 0.9);
+  outline-offset: 2px;
+}
+
 .header-title {
   margin: 0;
   font-size: 1.15rem;
@@ -785,6 +899,12 @@
 }
 
 .log-table .log-time {
+  white-space: nowrap;
+  font-size: 0.85em;
+  color: #64748b;
+}
+
+.log-table .log-user {
   white-space: nowrap;
   font-size: 0.85em;
   color: #64748b;

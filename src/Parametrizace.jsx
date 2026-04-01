@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import './App.css'
+import { getUsername } from './auth.js'
 
 const API_URL = '/api'
 
@@ -46,9 +47,10 @@ export default function Parametrizace() {
     setError(null)
     const url = editingId ? `${API_URL}/akcie/parametrizace/${editingId}` : `${API_URL}/akcie/parametrizace`
     const method = editingId ? 'PUT' : 'POST'
+    const username = getUsername()
     fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(username ? { 'x-username': username } : {}) },
       body: JSON.stringify({ nazev: n, yahooSymbol: y }),
     })
       .then((res) => {
@@ -80,7 +82,8 @@ export default function Parametrizace() {
   const handleDoplnitVychozi = () => {
     setDoplnovani(true)
     setError(null)
-    fetch(`${API_URL}/akcie/doplnit-vychozi`, { method: 'POST' })
+    const username = getUsername()
+    fetch(`${API_URL}/akcie/doplnit-vychozi`, { method: 'POST', headers: { ...(username ? { 'x-username': username } : {}) } })
       .then((res) => {
         if (!res.ok) return res.json().then((d) => Promise.reject(new Error(d.error || res.statusText)))
         return res.json()
@@ -110,7 +113,8 @@ export default function Parametrizace() {
     if (!window.confirm('Opravdu smazat tento záznam?')) return
     setSaving(true)
     setError(null)
-    fetch(`${API_URL}/akcie/parametrizace/${id}`, { method: 'DELETE' })
+    const username = getUsername()
+    fetch(`${API_URL}/akcie/parametrizace/${id}`, { method: 'DELETE', headers: { ...(username ? { 'x-username': username } : {}) } })
       .then((res) => {
         if (!res.ok) return res.json().then((d) => Promise.reject(new Error(d.error || res.statusText)))
         loadParametrizace()

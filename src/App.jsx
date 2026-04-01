@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isNetworkError, parseZmena } from './utils.js'
 import './App.css'
+import { getUsername } from './auth.js'
 
 const API_URL = '/api'
 
@@ -51,9 +52,10 @@ function App() {
   const handleNačístVšechnyYahoo = () => {
     setLoadingYahooAll(true)
     setError(null)
+    const username = getUsername()
     fetch(`${API_URL}/akcie/fetch-yahoo-all`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(username ? { 'x-username': username } : {}) },
       body: JSON.stringify({ datum }),
     })
       .then((res) => {

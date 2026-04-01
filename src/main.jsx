@@ -8,11 +8,13 @@ import Parametrizace from './Parametrizace.jsx'
 import GrafAkcji from './GrafAkcji.jsx'
 import Log from './Log.jsx'
 import DemoKomponenty from './DemoKomponenty.jsx'
+import Login from './Login.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<App />} />
           <Route path="parametrizace" element={<Parametrizace />} />
